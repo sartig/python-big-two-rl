@@ -46,15 +46,22 @@ def card_cmp(card1: str, card2: str) -> int:
     else:
         return 0
     
-def five_card_hand_cmp(hand1: list[5], hand2: list[5]) -> int:
-    pass
-
 card_cmp_key = cmp_to_key(card_cmp)
 
-def sort_deck(deck: list) -> None:
+
+#TODO: implement 5-card-hand comparator
+def five_card_hand_cmp(hand1: list[str], hand2: list[str]) -> int:
+    # maybe label all the plays? so instead of a 'play' being ['c1','c1','c3','c4','c5']
+    # it could be ['flush',['c1','c2','c3','c4','c5']]
+    # extend this generally to all plays? i.e.
+    # [['single', ['c1']], ['single', ['c2']], ['single', ['c3']], ['single', ['c4']], ['single', ['c5']], ['pair', ['c1','c6']], ...]
+    pass
+
+
+def sort_deck(deck: list[str]) -> None:
     deck.sort(key=card_cmp_key)
 
-def get_pairs(deck: list) -> list:
+def get_pairs(deck: list[str]) -> list[list[str]]:
     # assumes deck is sorted
     pairs = []
     for i in range(len(deck)-1):
@@ -63,7 +70,7 @@ def get_pairs(deck: list) -> list:
                 pairs.append([deck[i], deck[j]])
     return pairs
 
-def get_triplets(deck: list) -> list:
+def get_triplets(deck: list[str]) -> list[list[str]]:
     # assumes deck is sorted
     triplets = []
     card_ranks = [card[0] for card in deck]
@@ -78,7 +85,7 @@ def get_triplets(deck: list) -> list:
                 triplets.append(list(comb))
     return triplets
 
-def get_straights(deck: list) -> list:
+def get_straights(deck: list[str]) -> list[list[str]]:
     # straights are in rank order, with 3 being lowest and 2 being highest. lowest = 3-4-5-6-7, highest = J-Q-K-A-2
     straights = []
     deck_ranks = sorted(list(set([card[0] for card in deck])),key = lambda x: RANK_PRIORITY.index(x))
@@ -99,11 +106,12 @@ def get_straights(deck: list) -> list:
     
     return straights
 
-def get_flushes(deck:list[str]) -> list:
+def get_flushes(deck:list[str]) -> list[list[str]]:
     flushes = []
     # count suits, if any >=5 use combinations
     deck_suits = [card[1] for card in deck]
     suit_counts = [[suit,deck_suits.count(suit)] for suit in SUIT_PRIORITY]
+    # TODO: check for and remove straight flushes (since they will be found by get_straights)
     for suit, suit_count in suit_counts:
         if suit_count >= 5:
             combs = combinations([card for card in deck if card[1] == suit], 5)
@@ -112,7 +120,7 @@ def get_flushes(deck:list[str]) -> list:
 
     return flushes
 
-def get_five_card_hands(deck: list) -> list:
+def get_five_card_hands(deck: list[str]) -> list[list[str]]:
     five_card_hands = []
     # five card hands, in priority order:
     # straights
@@ -123,15 +131,18 @@ def get_five_card_hands(deck: list) -> list:
 
     # full house
         # count ranks, if any >= 3 use combinations with any >= 2
+        # order displayed is pair first, then triplet (for easier comparison)
     # four of a kind plus any filler card
-        # count ranks, if any >= 4 use with every other card
+        # count ranks, if any == 4 use with every other card
+        # order displayed is 4 of a kind first, then filler
     # straight flush
-        # combine straight and flush i guess idk
+        # combine straight and flush?
+        # should get automatically added by get_straights and get_flushes
 
     return five_card_hands
             
 
-def get_valid_plays(deck: list, previous_play: list = None) -> list:
+def get_valid_plays(deck: list[str], previous_play: list[str] = None) -> list[list[str]]:
     # plays must have same number of cards as previous play
     if previous_play is not None:
         required_length = len(previous_play)
@@ -141,14 +152,19 @@ def get_valid_plays(deck: list, previous_play: list = None) -> list:
             case 2:
                 # identify pairs in hand that are higher than previous play
                 pairs = get_pairs(deck)
+                # pairs only compare the higher card of the two to determine which is higher
+                # i.e. 7D + 7S beats 7C + 7H
                 return [pair for pair in pairs if card_cmp(pair[1], previous_play[1])>0]
             case 3:
                 # identify triplets in hand that are higher than previous play
                 triplets = get_triplets(deck)
+                # cannot compare triplets of the same rank so just compare first card of each
                 return [triplet for triplet in triplets if card_cmp(triplet[0], previous_play[0])>0]
             case 5:
+                fives = get_five_card_hands(deck)
                 # identify 5-card combinations in hand that are higher than previous play
-                pass
+                # use separate comparator for 5-card combinations
+                return [five for five in fives if five_card_hand_cmp(five, previous_play)]
     else:
         plays = []
         for card in deck:
@@ -157,11 +173,8 @@ def get_valid_plays(deck: list, previous_play: list = None) -> list:
         plays.extend(get_triplets(deck))
         return plays
 
-
-
+def main() -> None:
 # create and shuffle deck
-
-def main():
     deck = []
     for rank in RANK_PRIORITY:
         for suit in SUIT_PRIORITY:
@@ -179,7 +192,7 @@ def main():
         print(get_valid_plays(player_deck))
 
 
-def test_get_five_card_hands():
+def test_get_five_card_hands()-> None:
     print(get_five_card_hands(['3s','4s','jd','qs','ks','as','ac','2d','2s']))
 
 if __name__ == '__main__':
