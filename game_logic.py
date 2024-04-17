@@ -89,16 +89,13 @@ def get_flushes(deck: List[str]) -> List[Playable]:
     flushes = []
     # count suits, if any >=5 use combinations
     deck_suits = [card[1] for card in deck]
-    suit_counts = [[suit, deck_suits.count(suit)] for suit in SUIT_PRIORITY]
-    for suit, suit_count in suit_counts:
-        if suit_count >= 5:
-            combs = combinations([card for card in deck if card[1] == suit], 5)
-            for comb in combs:
-                if RANK_PRIORITY.index(comb[0][0]) + 4 != RANK_PRIORITY.index(
-                    comb[4][0]
-                ):
-                    # skip straight flushes
-                    flushes.append(Playable(PLAYABLE_PRIORITY[4], list(comb)))
+    valid_suits = [suit for suit in SUIT_PRIORITY if deck_suits.count(suit) >= 5]
+    for suit in valid_suits:
+        combs = combinations([card for card in deck if card[1] == suit], 5)
+        for comb in combs:
+            if RANK_PRIORITY.index(comb[0][0]) + 4 != RANK_PRIORITY.index(comb[4][0]):
+                # skip straight flushes
+                flushes.append(Playable(PLAYABLE_PRIORITY[4], list(comb)))
 
     return flushes
 
@@ -106,11 +103,17 @@ def get_flushes(deck: List[str]) -> List[Playable]:
 def get_full_houses(deck: List[str]) -> List[Playable]:
     full_houses = []
     deck_ranks = [card[0] for card in deck]
-    rank_counts = [[rank, deck_ranks.count(rank)] for rank in RANK_PRIORITY]
+
+    # only care about ranks with 2 or more cards
+    rank_counts = [
+        [rank, deck_ranks.count(rank)]
+        for rank in RANK_PRIORITY
+        if deck_ranks.count(rank) >= 2
+    ]
     for rank1, count1 in rank_counts:
         if count1 >= 3:
-            for rank2, count2 in rank_counts:
-                if rank1 != rank2 and count2 >= 2:
+            for rank2 in rank_counts:
+                if rank1 != rank2:
                     combs1 = list(
                         combinations([card for card in deck if card[0] == rank1], 3)
                     )
