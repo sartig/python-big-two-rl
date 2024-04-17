@@ -149,6 +149,50 @@ def get_flushes(deck: list[str]) -> list[str, list[str]]:
     return flushes
 
 
+def get_full_houses(deck: list[str]) -> list[str, list[str]]:
+    full_houses = []
+    deck_ranks = [card[0] for card in deck]
+    rank_counts = [[rank, deck_ranks.count(rank)] for rank in RANK_PRIORITY]
+    for rank1, count1 in rank_counts:
+        if count1 >= 3:
+            for rank2, count2 in rank_counts:
+                if rank1 != rank2 and count2 >= 2:
+                    combs1 = list(
+                        combinations([card for card in deck if card[0] == rank1], 3)
+                    )
+                    combs2 = list(
+                        combinations([card for card in deck if card[0] == rank2], 2)
+                    )
+                    for comb1 in combs1:
+                        for comb2 in combs2:
+                            full_houses.append(
+                                [
+                                    PLAYABLE_PRIORITY[5],
+                                    # put triplet at end of list
+                                    list(comb2) + list(comb1),
+                                ]
+                            )
+    return full_houses
+
+
+def get_four_of_a_kinds(deck: list[str]) -> list[str, list[str]]:
+    four_of_a_kinds = []
+    deck_ranks = [card[0] for card in deck]
+    rank_counts = [[rank, deck_ranks.count(rank)] for rank in RANK_PRIORITY]
+    for rank, count in rank_counts:
+        if count == 4:
+            for other_card in deck:
+                if other_card[0] != rank:
+                    four_of_a_kinds.append(
+                        [
+                            PLAYABLE_PRIORITY[6],
+                            [card for card in deck if card[0] == rank] + [other_card],
+                        ]
+                    )
+
+    return four_of_a_kinds
+
+
 def get_five_card_hands(deck: list[str]) -> list[str, list[str]]:
     five_card_hands = []
     # five card hands, in priority order:
@@ -158,15 +202,14 @@ def get_five_card_hands(deck: list[str]) -> list[str, list[str]]:
     # flushes
     five_card_hands.extend(get_flushes(deck))
 
-    # full house
-    # count ranks, if any >= 3 use combinations with any >= 2
-    # order displayed is pair first, then triplet (for easier comparison)
+    # full houses
+    five_card_hands.extend(get_full_houses(deck))
+
     # four of a kind plus any filler card
+    five_card_hands.extend(get_four_of_a_kinds(deck))
     # count ranks, if any == 4 use with every other card
     # order displayed is 4 of a kind first, then filler
-    # straight flush
-    # combine straight and flush?
-    # should get automatically added by get_straights and get_flushes
+    # straight flush handled in straight & flush functions
 
     return five_card_hands
 
@@ -232,17 +275,20 @@ def main() -> None:
         print("Player {}'s deck:".format(player_decks.index(player_deck) + 1))
         print(player_deck)
         print("Player {}'s valid plays:".format(player_decks.index(player_deck) + 1))
-        print(get_valid_plays(player_deck))
+        for play_option in get_valid_plays(player_deck):
+            print(play_option)
 
 
 def test_get_five_card_hands() -> None:
     play_options = get_valid_plays(
-        ["3d", "3c", "3h", "3s", "4s", "5s", "6s", "7s", "9s"],
+        ["3d", "3c", "3h", "3s", "9d", "9c", "9h"],
         ["straight", ["4c", "5h", "6d", "7c", "8h"]],
     )
     play_options.sort(key=play_cmp_key)
-    print(play_options)
+    for play_option in play_options:
+        print(play_option)
 
 
 if __name__ == "__main__":
-    test_get_five_card_hands()
+    # test_get_five_card_hands()
+    main()
