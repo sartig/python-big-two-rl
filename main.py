@@ -176,18 +176,20 @@ def get_valid_plays(
 ) -> list[str, list[str]]:
     # plays must have same number of cards as previous play
     if previous_play is not None:
-        required_length = len(previous_play)
+        required_length = len(previous_play[1])
         match required_length:
             case 1:
-                return [card for card in deck if card_cmp(card, previous_play[0]) > 0]
+                return [
+                    [PLAYABLE_PRIORITY[0], [card]]
+                    for card in deck
+                    if card_cmp(card, previous_play[1][0]) > 0
+                ]
             case 2:
                 # identify pairs in hand that are higher than previous play
                 pairs = get_pairs(deck)
                 # pairs only compare the higher card of the two to determine which is higher
                 # i.e. 7D + 7S beats 7C + 7H
-                return [
-                    pair for pair in pairs if card_cmp(pair[1], previous_play[1]) > 0
-                ]
+                return [pair for pair in pairs if play_cmp(pair, previous_play) > 0]
             case 3:
                 # identify triplets in hand that are higher than previous play
                 triplets = get_triplets(deck)
@@ -195,19 +197,20 @@ def get_valid_plays(
                 return [
                     triplet
                     for triplet in triplets
-                    if card_cmp(triplet[0], previous_play[0]) > 0
+                    if play_cmp(triplet, previous_play) > 0
                 ]
             case 5:
                 fives = get_five_card_hands(deck)
                 # identify 5-card combinations in hand that are higher than previous play
                 # use separate comparator for 5-card combinations
-                return [five for five in fives if play_cmp(five, previous_play)]
+                return [five for five in fives if play_cmp(five, previous_play) > 0]
     else:
         plays = []
         for card in deck:
-            plays.append([PLAYABLE_PRIORITY[0], card])
+            plays.append([PLAYABLE_PRIORITY[0], [card]])
         plays.extend(get_pairs(deck))
         plays.extend(get_triplets(deck))
+        plays.extend(get_five_card_hands(deck))
         return plays
 
 
@@ -233,11 +236,12 @@ def main() -> None:
 
 
 def test_get_five_card_hands() -> None:
-    five_card_hands = get_five_card_hands(
-        ["3d", "3c", "3h", "3s", "4s", "5s", "6s", "7s", "9s"]
+    play_options = get_valid_plays(
+        ["3d", "3c", "3h", "3s", "4s", "5s", "6s", "7s", "9s"],
+        ["straight", ["4c", "5h", "6d", "7c", "8h"]],
     )
-    five_card_hands.sort(key=play_cmp_key)
-    print(five_card_hands)
+    play_options.sort(key=play_cmp_key)
+    print(play_options)
 
 
 if __name__ == "__main__":
