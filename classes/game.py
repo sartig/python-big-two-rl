@@ -19,7 +19,7 @@ class Game:
         self.current_player_index = -1
         for idx, player_hand in enumerate(player_hands):
             sort_cards(player_hand)
-            self.players[idx].set_hand(player_hand)
+            self.players[idx].hand = player_hand
             # 3d is always the first card in a sorted hand so time complexity is actually O(1)
             if "3d" in player_hand:
                 self.current_player_index = idx
@@ -40,7 +40,7 @@ class Game:
         self.last_played_player = self.current_player_index
         self.current_player_index = (self.current_player_index + 1) % self.player_count
 
-        # if other players have all passed, start a new round
+        # if all other players have all passed, start a new round
         if self.current_player_index == self.last_played_set_player:
             print("\nAll other players passed, starting new round")
             self.start_new_round()

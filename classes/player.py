@@ -8,9 +8,6 @@ class Player:
     def __init__(self) -> None:
         self.hand = []
 
-    def set_hand(self, hand: List[str]) -> None:
-        self.hand = hand
-
     def play_cards(self, cards: CardSet) -> None:
         self.hand = [card for card in self.hand if card not in cards.cards]
 

@@ -3,7 +3,6 @@
 
 Experimenting with using machine learning to create an AI to play Big Two
 
-
 ## Features
 
 ### Game logic
@@ -39,3 +38,19 @@ Experimenting with using machine learning to create an AI to play Big Two
 - [ ] Build a visual representation of the game
 - [ ] Build a single-player version of the game where the other players are controlled by AI
 - [ ] Display suggested plays from the fully-trained AI model
+
+## Testing
+To run all tests:
+```bash
+python -m unittest discover
+```
+
+To run a specific test class:
+```bash
+python -m unittest test.test_deck
+```
+
+To run a single test case:
+```bash
+python -m unittest test.test_deck.test_deal_equal_cards
+```

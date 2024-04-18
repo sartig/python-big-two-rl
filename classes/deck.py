@@ -14,9 +14,8 @@ class Deck:
         for i in range(player_count):
             player_decks.append(
                 self.cards[
-                    i * len(self.cards) // player_count : (i + 1)
-                    * len(self.cards)
-                    // player_count
+                    i * (len(self.cards) // player_count) : (i + 1)
+                    * (len(self.cards) // player_count)
                 ]
             )
         return player_decks
