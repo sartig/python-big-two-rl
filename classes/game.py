@@ -13,9 +13,13 @@ class Game:
 
     def start_new_game(self) -> None:
         self.deck.reset()
-        self.player_hands = self.deck.deal(self.player_count)
+        player_hands = self.deck.deal(self.player_count)
         self.current_player_index = -1
-        for idx, player_hand in enumerate(self.player_hands):
+        for idx, player_hand in enumerate(player_hands):
             sort_cards(player_hand)
+            self.players[idx].set_hand(player_hand)
             if player_hand[0] == "3d":
                 self.current_player_index = idx
+
+    def get_current_player(self) -> Player:
+        return self.players[self.current_player_index]

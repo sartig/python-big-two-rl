@@ -9,7 +9,7 @@ Experimenting with using machine learning to create an AI to play Big Two
 ### Game logic
 - [x] For a given a hand, find all possible playable combinations
 - [x] For a given hand and last played cards, find all possible playable combinations
-- [ ] Start a game with the player with the 3♦ (and ensure they use that card when they start)
+- [x] Start a game with the player with the 3♦ (and ensure they use that card when they start)
 - [ ] Implement basic turn-based play loop
 - [ ] Declare win state
 

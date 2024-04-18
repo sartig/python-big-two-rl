@@ -171,7 +171,9 @@ def get_five_card_hands(deck: List[str]) -> List[Playable]:
 
 
 def get_valid_plays(
-    deck: List[str], previous_play: Optional[Playable] = None
+    deck: List[str],
+    previous_play: Optional[Playable] = None,
+    is_starting_hand: bool = False,
 ) -> List[Playable]:
     # plays must have same number of cards as previous play
     if previous_play is not None:
@@ -212,4 +214,7 @@ def get_valid_plays(
         plays.extend(get_pairs(deck))
         plays.extend(get_triplets(deck))
         plays.extend(get_five_card_hands(deck))
+        if is_starting_hand:
+            # TODO: make this more efficient (skip finding hands that don't contain the 3 of diamonds)
+            plays = [play for play in plays if "3d" in play.cards]
         return plays
