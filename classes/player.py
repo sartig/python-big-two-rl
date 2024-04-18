@@ -11,8 +11,8 @@ class Player:
     def set_hand(self, hand: List[str]) -> None:
         self.hand = hand
 
-    def play_cards(self, cards: List[str]) -> None:
-        self.hand = [card for card in self.hand if card not in cards]
+    def play_cards(self, cards: CardSet) -> None:
+        self.hand = [card for card in self.hand if card not in cards.cards]
 
     def get_play_options(
         self, previous_play: Optional[CardSet] = None, is_starting_hand: bool = False

@@ -10,8 +10,8 @@ Experimenting with using machine learning to create an AI to play Big Two
 - [x] For a given a hand, find all possible playable combinations
 - [x] For a given hand and last played cards, find all possible playable combinations
 - [x] Start a game with the player with the 3♦ (and ensure they use that card when they start)
-- [ ] Implement basic turn-based play loop
-- [ ] Declare win state
+- [x] Implement basic turn-based play loop
+- [x] Declare winner
 
 ### Machine learning
 - [ ] Decide which package to use (PyTorch/Tensorflow/other)
@@ -28,7 +28,9 @@ Experimenting with using machine learning to create an AI to play Big Two
 - [ ] Build model
     - how many layers?
     - what algorithms?
-- [ ] Train model (reinforcement learning: Q-learning)
+- [ ] Train model
+    - reinforcement learning: Q-learning?
+    - Use Markov decision process (deterministic transitions based on validity of suggested action - state unchanged or changed)?
 
 ### 'Levels' of AI (?)
 - [ ] Save checkpoints during training and store weights so various 'difficulties' can be chosen
