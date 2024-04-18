@@ -1,7 +1,7 @@
 from itertools import combinations
 from typing import List, Optional
 
-from classes import Playable
+from classes.playable import Playable
 from constants import PLAYABLE_PRIORITY, RANK_PRIORITY, SUIT_PRIORITY
 from utils import card_cmp, play_cmp
 

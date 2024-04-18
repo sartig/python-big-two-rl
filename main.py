@@ -1,13 +1,9 @@
-from typing import List
-
-from classes import Deck, Playable
+from classes.deck import Deck
+from classes.playable import Playable
+from classes.game import Game
 from constants import PLAYER_COUNT
 from game_logic import get_valid_plays
-from utils import card_cmp_key, play_cmp_key
-
-
-def sort_deck(deck: List[str]) -> None:
-    deck.sort(key=card_cmp_key)
+from utils import play_cmp_key, sort_cards
 
 
 def main() -> None:
@@ -15,11 +11,11 @@ def main() -> None:
     deck = Deck()
     # deal cards
     player_decks = deck.deal(PLAYER_COUNT)
-    for player_deck in player_decks:
-        sort_deck(player_deck)
-        print("Player {}'s deck:".format(player_decks.index(player_deck) + 1))
+    for idx, player_deck in enumerate(player_decks):
+        sort_cards(player_deck)
+        print("Player {}'s deck:".format(idx + 1))
         print(player_deck)
-        print("Player {}'s valid plays:".format(player_decks.index(player_deck) + 1))
+        print("Player {}'s valid plays:".format(idx + 1))
         if player_deck is not None:
             for play_option in get_valid_plays(player_deck):
                 print(play_option)
@@ -35,6 +31,17 @@ def test_get_five_card_hands() -> None:
         print(play_option)
 
 
+def test_game() -> None:
+    game = Game(PLAYER_COUNT)
+    game.start_new_game()
+    for index, player_hand in enumerate(game.player_hands):
+        print("Player {}'s hand: {}".format(index + 1, player_hand))
+
+    print("Starting player: {}".format(game.current_player_index + 1))
+
+
 if __name__ == "__main__":
     # test_get_five_card_hands()
-    main()
+    # test_deck()
+    test_game()
+    # main()

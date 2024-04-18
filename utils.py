@@ -1,6 +1,7 @@
 from functools import cmp_to_key
+from typing import List
 
-from classes import Playable
+from classes.playable import Playable
 from constants import PLAYABLE_PRIORITY, RANK_PRIORITY, SUIT_PRIORITY
 
 
@@ -39,3 +40,7 @@ def play_cmp(hand1: Playable, hand2: Playable) -> int:
 
 
 play_cmp_key = cmp_to_key(play_cmp)
+
+
+def sort_cards(cards: List[str]) -> None:
+    cards.sort(key=card_cmp_key)
