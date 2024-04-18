@@ -6,10 +6,8 @@ from utils import sort_cards
 class Game:
     def __init__(self, player_count: int) -> None:
         self.deck = Deck()
-        self.players = []
         self.player_count = player_count
-        for _ in range(player_count):
-            self.players.append(Player())
+        self.players = [Player() for _ in range(self.player_count)]
 
     def start_new_game(self) -> None:
         self.deck.reset()
@@ -18,7 +16,8 @@ class Game:
         for idx, player_hand in enumerate(player_hands):
             sort_cards(player_hand)
             self.players[idx].set_hand(player_hand)
-            if player_hand[0] == "3d":
+            # 3d is always the first card in a sorted hand so time complexity is actually O(1)
+            if "3d" in player_hand:
                 self.current_player_index = idx
 
     def get_current_player(self) -> Player:

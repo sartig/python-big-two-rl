@@ -1,22 +1,22 @@
 from itertools import combinations
 from typing import List, Optional
 
-from classes.playable import Playable
+from classes.card_set import CardSet
 from constants import PLAYABLE_PRIORITY, RANK_PRIORITY, SUIT_PRIORITY
 from utils import card_cmp, play_cmp
 
 
-def get_pairs(deck: List[str]) -> List[Playable]:
+def get_pairs(deck: List[str]) -> List[CardSet]:
     # assumes deck is sorted
     pairs = []
     for i in range(len(deck) - 1):
         for j in range(i + 1, len(deck)):
             if deck[i][0] == deck[j][0]:
-                pairs.append(Playable(PLAYABLE_PRIORITY[1], [deck[i], deck[j]]))
+                pairs.append(CardSet(PLAYABLE_PRIORITY[1], [deck[i], deck[j]]))
     return pairs
 
 
-def get_triplets(deck: List[str]) -> List[Playable]:
+def get_triplets(deck: List[str]) -> List[CardSet]:
     # assumes deck is sorted
     triplets = []
     card_ranks = [card[0] for card in deck]
@@ -27,18 +27,18 @@ def get_triplets(deck: List[str]) -> List[Playable]:
     for rank, count in valid_ranks:
         if count == 3:
             triplets.append(
-                Playable(
+                CardSet(
                     PLAYABLE_PRIORITY[2], [card for card in deck if card[0] == rank]
                 )
             )
         else:  # count must be 4
             combs = combinations([card for card in deck if card[0] == rank], 3)
             for comb in combs:
-                triplets.append(Playable(PLAYABLE_PRIORITY[2], list(comb)))
+                triplets.append(CardSet(PLAYABLE_PRIORITY[2], list(comb)))
     return triplets
 
 
-def get_straights(deck: List[str]) -> List[Playable]:
+def get_straights(deck: List[str]) -> List[CardSet]:
     # straights are in rank order, with 3 being lowest and 2 being highest. lowest = 3-4-5-6-7, highest = J-Q-K-A-2
     straights = []
     deck_ranks = sorted(
@@ -70,9 +70,9 @@ def get_straights(deck: List[str]) -> List[Playable]:
         straights.extend(
             [
                 (
-                    Playable(PLAYABLE_PRIORITY[7], [c1, c2, c3, c4, c5])
+                    CardSet(PLAYABLE_PRIORITY[7], [c1, c2, c3, c4, c5])
                     if c1[1] == c2[1] == c3[1] == c4[1] == c5[1]
-                    else Playable(PLAYABLE_PRIORITY[3], [c1, c2, c3, c4, c5])
+                    else CardSet(PLAYABLE_PRIORITY[3], [c1, c2, c3, c4, c5])
                 )
                 for c5 in card5
                 for c4 in card4
@@ -85,7 +85,7 @@ def get_straights(deck: List[str]) -> List[Playable]:
     return straights
 
 
-def get_flushes(deck: List[str]) -> List[Playable]:
+def get_flushes(deck: List[str]) -> List[CardSet]:
     flushes = []
     # count suits, if any >=5 use combinations
     deck_suits = [card[1] for card in deck]
@@ -95,12 +95,12 @@ def get_flushes(deck: List[str]) -> List[Playable]:
         for comb in combs:
             if RANK_PRIORITY.index(comb[0][0]) + 4 != RANK_PRIORITY.index(comb[4][0]):
                 # skip straight flushes
-                flushes.append(Playable(PLAYABLE_PRIORITY[4], list(comb)))
+                flushes.append(CardSet(PLAYABLE_PRIORITY[4], list(comb)))
 
     return flushes
 
 
-def get_full_houses(deck: List[str]) -> List[Playable]:
+def get_full_houses(deck: List[str]) -> List[CardSet]:
     full_houses = []
     deck_ranks = [card[0] for card in deck]
 
@@ -123,7 +123,7 @@ def get_full_houses(deck: List[str]) -> List[Playable]:
                     for comb1 in combs1:
                         for comb2 in combs2:
                             full_houses.append(
-                                Playable(
+                                CardSet(
                                     PLAYABLE_PRIORITY[5],
                                     # put triplet at end of list
                                     list(comb2) + list(comb1),
@@ -132,7 +132,7 @@ def get_full_houses(deck: List[str]) -> List[Playable]:
     return full_houses
 
 
-def get_four_of_a_kinds(deck: List[str]) -> List[Playable]:
+def get_four_of_a_kinds(deck: List[str]) -> List[CardSet]:
     four_of_a_kinds = []
     deck_ranks = [card[0] for card in deck]
     rank_counts = [[rank, deck_ranks.count(rank)] for rank in RANK_PRIORITY]
@@ -141,7 +141,7 @@ def get_four_of_a_kinds(deck: List[str]) -> List[Playable]:
             for other_card in deck:
                 if other_card[0] != rank:
                     four_of_a_kinds.append(
-                        Playable(
+                        CardSet(
                             PLAYABLE_PRIORITY[6],
                             [card for card in deck if card[0] == rank] + [other_card],
                         )
@@ -150,7 +150,7 @@ def get_four_of_a_kinds(deck: List[str]) -> List[Playable]:
     return four_of_a_kinds
 
 
-def get_five_card_hands(deck: List[str]) -> List[Playable]:
+def get_five_card_hands(deck: List[str]) -> List[CardSet]:
     five_card_hands = []
 
     # straights
@@ -172,16 +172,16 @@ def get_five_card_hands(deck: List[str]) -> List[Playable]:
 
 def get_valid_plays(
     deck: List[str],
-    previous_play: Optional[Playable] = None,
+    previous_play: Optional[CardSet] = None,
     is_starting_hand: bool = False,
-) -> List[Playable]:
+) -> List[CardSet]:
     # plays must have same number of cards as previous play
     if previous_play is not None:
         required_length = len(previous_play.cards)
         match required_length:
             case 1:
                 return [
-                    Playable(PLAYABLE_PRIORITY[0], [card])
+                    CardSet(PLAYABLE_PRIORITY[0], [card])
                     for card in deck
                     if card_cmp(card, previous_play.cards[0]) > 0
                 ]
@@ -210,7 +210,7 @@ def get_valid_plays(
     else:
         plays = []
         for card in deck:
-            plays.append(Playable(PLAYABLE_PRIORITY[0], [card]))
+            plays.append(CardSet(PLAYABLE_PRIORITY[0], [card]))
         plays.extend(get_pairs(deck))
         plays.extend(get_triplets(deck))
         plays.extend(get_five_card_hands(deck))

@@ -1,7 +1,7 @@
 from functools import cmp_to_key
 from typing import List
 
-from classes.playable import Playable
+from classes.card_set import CardSet
 from constants import PLAYABLE_PRIORITY, RANK_PRIORITY, SUIT_PRIORITY
 
 
@@ -21,7 +21,7 @@ def card_cmp(card1: str, card2: str) -> int:
 card_cmp_key = cmp_to_key(card_cmp)
 
 
-def play_cmp(hand1: Playable, hand2: Playable) -> int:
+def play_cmp(hand1: CardSet, hand2: CardSet) -> int:
     if PLAYABLE_PRIORITY.index(hand1.hand_type) > PLAYABLE_PRIORITY.index(
         hand2.hand_type
     ):

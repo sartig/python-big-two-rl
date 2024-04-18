@@ -1,6 +1,6 @@
 from typing import List, Optional
 
-from classes.playable import Playable
+from classes.card_set import CardSet
 from game_logic import get_valid_plays
 
 
@@ -15,6 +15,6 @@ class Player:
         self.hand = [card for card in self.hand if card not in cards]
 
     def get_play_options(
-        self, previous_play: Optional[Playable] = None, is_starting_hand: bool = False
-    ) -> List[Playable]:
+        self, previous_play: Optional[CardSet] = None, is_starting_hand: bool = False
+    ) -> List[CardSet]:
         return get_valid_plays(self.hand, previous_play, is_starting_hand)
