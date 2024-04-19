@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from classes.card_set import CardSet
-from game_logic import get_valid_plays
+from utils.game_logic import get_valid_plays
 
 
 class Player:

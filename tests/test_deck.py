@@ -1,6 +1,6 @@
 import unittest
 from classes.deck import Deck
-from constants import RANK_PRIORITY, SUIT_PRIORITY
+from utils.constants import RANK_PRIORITY, SUIT_PRIORITY
 
 
 class TestDeck(unittest.TestCase):

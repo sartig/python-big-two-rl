@@ -1,5 +1,5 @@
 from classes.game import Game
-from constants import PLAYER_COUNT
+from utils.constants import PLAYER_COUNT
 
 
 def main() -> None:

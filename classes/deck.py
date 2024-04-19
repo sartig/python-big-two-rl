@@ -1,7 +1,7 @@
 import random
 from typing import List
 
-from constants import RANK_PRIORITY, SUIT_PRIORITY
+from utils.constants import RANK_PRIORITY, SUIT_PRIORITY
 
 
 class Deck:

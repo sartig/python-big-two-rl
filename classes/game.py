@@ -2,7 +2,7 @@ from typing import Optional
 from classes.card_set import CardSet
 from classes.deck import Deck
 from classes.player import Player
-from utils import sort_cards
+from utils.comparison import sort_cards
 
 
 class Game:

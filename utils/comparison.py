@@ -2,7 +2,7 @@ from functools import cmp_to_key
 from typing import List
 
 from classes.card_set import CardSet
-from constants import PLAYABLE_PRIORITY, RANK_PRIORITY, SUIT_PRIORITY
+from utils.constants import PLAYABLE_PRIORITY, RANK_PRIORITY, SUIT_PRIORITY
 
 
 def card_cmp(card1: str, card2: str) -> int:
