@@ -1,29 +1,37 @@
 from classes.game import Game
-from classes.player import HumanPlayer
+from classes.player import HumanPlayer, RandomAIPlayer
 
 
 def main() -> None:
     # create game
     players = [
         HumanPlayer(),
-        HumanPlayer(),
-        HumanPlayer(),
-        HumanPlayer(),
+        RandomAIPlayer(),
+        RandomAIPlayer(),
+        RandomAIPlayer(),
     ]
     game = Game(players)
     game.start_new_game()
 
     while True:
-        print("Current player: {}".format(game.current_player_index + 1))
-        print("Current player's hand: {}".format(game.get_current_player().hand))
+        print(
+            "Current player: {} ({})".format(
+                game.current_player_index + 1,
+                game.get_current_player().__class__.__name__,
+            ),
+        )
+
+        print("Last played set: {}".format(game.last_played_set))
+        # if type(game.get_current_player) is HumanPlayer:
         play_options = game.get_current_player().get_play_options(
             game.last_played_set, game.is_first_turn
         )
-        print("Last played set: {}".format(game.last_played_set))
-        print("Play options:")
-        for idx, play_option in enumerate(play_options):
-            print("{}) {}".format(idx + 1, play_option))
-        print("q) Quit game")
+        if isinstance(game.get_current_player(), HumanPlayer):
+            print("Current player's hand: {}".format(game.get_current_player().hand))
+            print("Play options:")
+            for idx, play_option in enumerate(play_options):
+                print("{}) {}".format(idx + 1, play_option))
+            print("q) Quit game")
 
         index_to_play = game.get_current_player().get_play_choice()
         if index_to_play == -1:

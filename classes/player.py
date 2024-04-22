@@ -1,4 +1,6 @@
 from abc import abstractmethod
+import random
+from time import sleep
 from typing import List, Optional
 
 from classes.card_set import CardSet
@@ -53,3 +55,14 @@ class HumanPlayer(Player):
                 return int(selected) - 1
             else:
                 print("Invalid selection")
+
+
+class RandomAIPlayer(Player):
+    def get_play_choice(self) -> int:
+        sleep(1)
+        if self.play_options:
+            if len(self.play_options) == 1:
+                return 0
+            return random.randint(0, len(self.play_options) - 2)
+
+        return -1
