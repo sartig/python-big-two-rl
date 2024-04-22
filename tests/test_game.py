@@ -1,15 +1,16 @@
 import unittest
 from unittest.mock import MagicMock
+
 from classes.card_set import CardSet
-from classes.game import Game
 from classes.deck import Deck
-from classes.player import Player
+from classes.game import Game
+from classes.player import HumanPlayer, Player
 
 
 class TestGame(unittest.TestCase):
     def setUp(self) -> None:
         self.player_count = 4
-        self.game = Game(self.player_count)
+        self.game = Game([HumanPlayer() for _ in range(4)])
 
     def test_initialize(self):
         # assert deck is initialised

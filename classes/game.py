@@ -33,7 +33,8 @@ class Game:
         self.last_played_player = None
         self.last_played_set_player = None
 
-    def next_player(self, played_set: CardSet = CardSet("pass", [])) -> None:
+    # return value is if a new round was started
+    def next_player(self, played_set: CardSet = CardSet("pass", [])) -> bool:
         self.is_first_turn = False
         if played_set.hand_type != "pass":
             self.last_played_set = played_set
@@ -43,8 +44,9 @@ class Game:
 
         # if all other players have all passed, start a new round
         if self.current_player_index == self.last_played_set_player:
-            print("\nAll other players passed, starting new round")
             self.start_new_round()
+            return True
+        return False
 
     def did_player_win(self) -> bool:
         return len(self.get_current_player().hand) == 0

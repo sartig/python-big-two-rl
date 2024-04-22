@@ -1,4 +1,5 @@
 import unittest
+
 from classes.deck import Deck
 from utils.constants import RANK_PRIORITY, SUIT_PRIORITY
 

@@ -38,7 +38,12 @@ def main() -> None:
         if game.did_player_win():
             print("Player {} wins!".format(game.current_player_index + 1))
             return
-        game.next_player(played_set)
+        if game.next_player(played_set):
+            print(
+                "\nAll other players passed, starting new round with player {}\n".format(
+                    game.current_player_index + 1
+                )
+            )
 
 
 if __name__ == "__main__":

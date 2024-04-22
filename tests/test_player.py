@@ -1,27 +1,27 @@
 import unittest
 from unittest.mock import patch
-from classes.player import Player
+from classes.player import HumanPlayer
 from classes.card_set import CardSet
 
 
 class TestPlayer(unittest.TestCase):
     def test_play_cards_removes_matching_cards(self):
-        player = Player()
+        player = HumanPlayer()
         player.hand = ["3d", "4h", "7c", "9s"]
         cards = CardSet("single", ["4h"])
-        player.play_cards(cards)
+        player._play_cards(cards)
         self.assertEqual(player.hand, ["3d", "7c", "9s"])
 
     def test_play_cards_no_matching_cards(self):
-        player = Player()
+        player = HumanPlayer()
         player.hand = ["3d", "4h", "7c", "9s"]
         cards = CardSet("pair", ["5d", "5c"])
-        player.play_cards(cards)
+        player._play_cards(cards)
         self.assertEqual(player.hand, ["3d", "4h", "7c", "9s"])
 
     @patch("classes.player.get_valid_plays")
     def test_get_play_options_with_previous_play(self, get_valid_plays_mock):
-        player = Player()
+        player = HumanPlayer()
         player.hand = ["3d", "4h", "7d", "7c"]
         previous_play = CardSet("pair", ["5d", "5c"])
         expected_return = [CardSet("pair", ["7d", "7c"])]
@@ -32,7 +32,7 @@ class TestPlayer(unittest.TestCase):
 
     @patch("classes.player.get_valid_plays")
     def test_get_play_options_without_previous_play(self, get_valid_plays_mock):
-        player = Player()
+        player = HumanPlayer()
         player.hand = ["3d", "4h", "7c", "9s"]
         expected_return = [
             CardSet("single", ["3d"]),
@@ -47,7 +47,7 @@ class TestPlayer(unittest.TestCase):
 
     @patch("classes.player.get_valid_plays")
     def test_get_play_options_with_is_starting_hand(self, get_valid_plays_mock):
-        player = Player()
+        player = HumanPlayer()
         player.hand = ["3d", "4h", "7c", "9s"]
         expected_return = [CardSet("single", ["3d"])]
         get_valid_plays_mock.return_value = expected_return
