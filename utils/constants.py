@@ -10,4 +10,3 @@ PLAYABLE_PRIORITY = [
     "fourofakind",
     "straightflush",
 ]
-PLAYER_COUNT = 4

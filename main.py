@@ -1,10 +1,16 @@
 from classes.game import Game
-from utils.constants import PLAYER_COUNT
+from classes.player import HumanPlayer
 
 
 def main() -> None:
     # create game
-    game = Game(PLAYER_COUNT)
+    players = [
+        HumanPlayer(),
+        HumanPlayer(),
+        HumanPlayer(),
+        HumanPlayer(),
+    ]
+    game = Game(players)
     game.start_new_game()
 
     while True:
@@ -13,31 +19,20 @@ def main() -> None:
         play_options = game.get_current_player().get_play_options(
             game.last_played_set, game.is_first_turn
         )
+        print("Last played set: {}".format(game.last_played_set))
         print("Play options:")
         for idx, play_option in enumerate(play_options):
             print("{}) {}".format(idx + 1, play_option))
-        if not game.is_first_turn and game.last_played_set is not None:
-            print("p) Pass")
         print("q) Quit game")
-        selected = input("Enter selection: ")
-        if selected == "q":
+
+        index_to_play = game.get_current_player().get_play_choice()
+        if index_to_play == -1:
             return
-        if selected == "p" and not game.is_first_turn:
-            game.next_player()
-            continue
-        if (
-            selected.isnumeric()
-            and int(selected) > 0
-            and int(selected) <= len(play_options)
-        ):
-            played_set = play_options[int(selected) - 1]
-            game.get_current_player().play_cards(played_set)
-            if game.did_player_win():
-                print("Player {} wins!".format(game.current_player_index + 1))
-                return
-            game.next_player(played_set)
-        else:
-            print("Invalid selection")
+        played_set = game.get_current_player().play_card_set_by_index(index_to_play)
+        if game.did_player_win():
+            print("Player {} wins!".format(game.current_player_index + 1))
+            return
+        game.next_player(played_set)
 
 
 if __name__ == "__main__":
