@@ -19,6 +19,8 @@ Experimenting with using machine learning to create an AI to play Big Two
         - 0: unknown where card is
         - 1: card in own hand
         - 2: card played
+    - one input per player in game, with value representing number of cards in hand
+        - will aid in creating strategies like playing pairs when a player has a single card left to prevent them from winning
 - [ ] Figure out best way to calculate reward
     - use hand size?
     - give points for win?

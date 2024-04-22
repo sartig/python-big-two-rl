@@ -1,4 +1,4 @@
-from abc import abstractmethod
+from abc import ABC, abstractmethod
 import random
 from time import sleep
 from typing import List, Optional
@@ -7,7 +7,7 @@ from classes.card_set import CardSet
 from utils.game_logic import get_valid_plays
 
 
-class Player:
+class Player(ABC):
     def __init__(self) -> None:
         self.hand = []
         self.play_options = None
