@@ -212,7 +212,7 @@ class TestGameLogic(unittest.TestCase):
 
     def test_get_valid_plays_no_previous_not_starting_hand(self):
         cards = ["3d", "5s", "6s", "7s", "8d", "8s"]
-        valid_plays = get_valid_plays(cards, is_starting_hand=False)
+        valid_plays = get_valid_plays(cards)
         expected = [
             CardSet("single", ["3d"]),
             CardSet("single", ["5s"]),
@@ -227,7 +227,10 @@ class TestGameLogic(unittest.TestCase):
     def test_get_valid_plays_with_previous(self):
         cards = ["3c", "3s", "8d", "8h"]
         valid_plays = get_valid_plays(cards, CardSet("pair", ["4d", "4h"]))
-        expected = [CardSet("pair", ["8d", "8h"])]
+        expected = [
+            CardSet("pair", ["8d", "8h"]),
+            CardSet("pass", []),
+        ]
         self.assertEqual(valid_plays, expected)
 
 

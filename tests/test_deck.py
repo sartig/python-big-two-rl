@@ -9,7 +9,7 @@ class TestDeck(unittest.TestCase):
         deck = Deck()
         deck.cards = []
         player_count = 4
-        player_decks = deck.deal(player_count)
+        player_decks = deck.shuffle_and_deal(player_count)
 
         self.assertEqual(player_decks, [[] for _ in range(player_count)])
 
@@ -17,7 +17,7 @@ class TestDeck(unittest.TestCase):
         deck = Deck()
         deck.cards = ["3d", "3c", "3h", "3s", "4d", "4c"]
         player_count = 3
-        player_decks = deck.deal(player_count)
+        player_decks = deck.shuffle_and_deal(player_count)
 
         self.assertEqual(len(player_decks), player_count)
         self.assertTrue(all(len(player_deck) == 2 for player_deck in player_decks))
@@ -26,7 +26,7 @@ class TestDeck(unittest.TestCase):
         deck = Deck()
         deck.cards = ["3d", "3c", "3h", "3s", "4d", "4c"]
         player_count = 4
-        player_decks = deck.deal(player_count)
+        player_decks = deck.shuffle_and_deal(player_count)
         self.assertEqual(len(player_decks), player_count)
         self.assertTrue(all(len(player_deck) == 1 for player_deck in player_decks))
 

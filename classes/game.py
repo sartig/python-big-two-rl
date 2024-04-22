@@ -10,13 +10,18 @@ class Game:
     def __init__(self, player_list: Sequence[Player]) -> None:
         self.deck = Deck()
         self.players = player_list
-        self.player_count = len(player_list)
+        self._player_count = len(player_list)
 
     def start_new_game(self) -> None:
+        """
+        Starts a new game by resetting all attributes. The deck is suffled and cards are
+        dealt equally to each player. The player with the 3 of diamonds in their hand
+        is set as the current player.
+        """
         self.deck.reset()
         self.is_first_turn = True
-        self.last_played_set = None
-        player_hands = self.deck.deal(self.player_count)
+        self.start_new_round()
+        player_hands = self.deck.shuffle_and_deal(self._player_count)
         self.current_player_index = -1
         for idx, player_hand in enumerate(player_hands):
             sort_cards(player_hand)
@@ -33,14 +38,23 @@ class Game:
         self.last_played_player = None
         self.last_played_set_player = None
 
-    # return value is if a new round was started
+    # return true if a new round was started
     def next_player(self, played_set: CardSet = CardSet("pass", [])) -> bool:
+        """
+        Updates the current player index and checks if a new round should be started.
+
+        Args:
+            played_set (CardSet, optional): The card set played by the current player. Defaults to CardSet("pass", []).
+
+        Returns:
+            bool: True if a new round was started, False otherwise.
+        """
         self.is_first_turn = False
         if played_set.hand_type != "pass":
             self.last_played_set = played_set
             self.last_played_set_player = self.current_player_index
         self.last_played_player = self.current_player_index
-        self.current_player_index = (self.current_player_index + 1) % self.player_count
+        self.current_player_index = (self.current_player_index + 1) % self._player_count
 
         # if all other players have all passed, start a new round
         if self.current_player_index == self.last_played_set_player:

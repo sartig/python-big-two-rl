@@ -8,23 +8,24 @@ from classes.player import HumanPlayer, Player
 
 
 class TestGame(unittest.TestCase):
+    PLAYER_COUNT = 4
+
     def setUp(self) -> None:
-        self.player_count = 4
-        self.game = Game([HumanPlayer() for _ in range(4)])
+        self.game = Game([HumanPlayer() for _ in range(self.PLAYER_COUNT)])
 
     def test_initialize(self):
         # assert deck is initialised
         self.assertIsInstance(self.game.deck, Deck)
         # assert correct player count
-        self.assertEqual(self.game.player_count, self.player_count)
+        self.assertEqual(self.game._player_count, self.PLAYER_COUNT)
         # assert correct num of players in array
-        self.assertEqual(len(self.game.players), self.player_count)
+        self.assertEqual(len(self.game.players), self.PLAYER_COUNT)
         # assert players all instanced
         self.assertTrue(all(isinstance(player, Player) for player in self.game.players))
 
     def test_start_new_game(self):
         mock_deck = MagicMock()
-        mock_deck.deal.return_value = [["3c"], ["3d"], ["3h"], ["3s"]]
+        mock_deck.shuffle_and_deal.return_value = [["3c"], ["3d"], ["3h"], ["3s"]]
         self.game.deck = mock_deck
         self.game.start_new_game()
         mock_deck.reset.assert_called_once()

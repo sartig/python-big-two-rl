@@ -24,7 +24,7 @@ class TestPlayer(unittest.TestCase):
         player = HumanPlayer()
         player.hand = ["3d", "4h", "7d", "7c"]
         previous_play = CardSet("pair", ["5d", "5c"])
-        expected_return = [CardSet("pair", ["7d", "7c"])]
+        expected_return = [CardSet("pair", ["7d", "7c"]), CardSet("pass", [])]
         get_valid_plays_mock.return_value = expected_return
         play_options = player.get_play_options(previous_play)
         self.assertEqual(play_options, expected_return)
