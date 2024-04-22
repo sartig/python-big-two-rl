@@ -39,6 +39,10 @@ class Player:
     def get_play_choice(self) -> int:
         pass
 
+    @abstractmethod
+    def player_type(self) -> str:
+        pass
+
 
 class HumanPlayer(Player):
     def get_play_choice(self) -> int:
@@ -56,6 +60,9 @@ class HumanPlayer(Player):
             else:
                 print("Invalid selection")
 
+    def player_type(self) -> str:
+        return "Human"
+
 
 class RandomAIPlayer(Player):
     def get_play_choice(self) -> int:
@@ -66,3 +73,16 @@ class RandomAIPlayer(Player):
             return random.randint(0, len(self.play_options) - 2)
 
         return -1
+
+    def player_type(self) -> str:
+        return "AI (random)"
+
+
+class LowestAIPlayer(Player):
+    def get_play_choice(self) -> int:
+        if self.play_options:
+            return 0
+        return -1
+
+    def player_type(self) -> str:
+        return "AI (plays lowest)"
