@@ -13,6 +13,7 @@ def main() -> None:
     game = Game(players)
     game.start_new_game()
 
+    # play game until someone wins or player quits
     while True:
         play_options = game.get_current_player().get_play_options(
             game.last_played_set, game.is_first_turn
@@ -35,15 +36,19 @@ def main() -> None:
                 played_set,
             )
         )
-        if game.did_player_win():
-            print("Player {} wins!".format(game.current_player_index + 1))
-            return
+        # pass played set to function to save history
+        if game.did_player_win(played_set):
+            print("Player {} wins!\n".format(game.current_player_index + 1))
+            break
+
         if game.next_player(played_set):
             print(
                 "\nAll other players passed, starting new round with player {}\n".format(
                     game.current_player_index + 1
                 )
             )
+
+    game.print_history()
 
 
 if __name__ == "__main__":

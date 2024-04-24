@@ -11,6 +11,8 @@ class Game:
         self.deck = Deck()
         self.players = player_list
         self._player_count = len(player_list)
+        self.history = []
+        self.round_number = 0
 
     def start_new_game(self) -> None:
         """
@@ -37,6 +39,7 @@ class Game:
         self.last_played_set = None
         self.last_played_player = None
         self.last_played_set_player = None
+        self.round_number += 1
 
     # return true if a new round was started
     def next_player(self, played_set: CardSet = CardSet("pass", [])) -> bool:
@@ -49,6 +52,7 @@ class Game:
         Returns:
             bool: True if a new round was started, False otherwise.
         """
+        self.history.append((self.round_number, self.current_player_index, played_set))
         self.is_first_turn = False
         if played_set.hand_type != "pass":
             self.last_played_set = played_set
@@ -62,5 +66,54 @@ class Game:
             return True
         return False
 
-    def did_player_win(self) -> bool:
-        return len(self.get_current_player().hand) == 0
+    def did_player_win(self, played_set: CardSet) -> bool:
+        if len(self.get_current_player().hand) == 0:
+            self.history.append(
+                (self.round_number, self.current_player_index, played_set)
+            )
+            self.history.append(
+                (self.round_number, self.current_player_index, CardSet("win", []))
+            )
+            return True
+        return False
+
+    def print_history(self) -> None:
+        prev_round = -1
+        print("Game history:")
+        for idx in range(len(self.history)):
+            curr_round, curr_player, curr_play = self.history[idx]
+            if curr_round != prev_round:
+                if prev_round != -1:
+                    print("Player {} wins the round!\n".format(curr_player + 1))
+                print("Round {}:".format(curr_round))
+                print(
+                    "Player {} ({}) starts with {}".format(
+                        curr_player + 1,
+                        self.players[curr_player].player_type(),
+                        curr_play,
+                    )
+                )
+            elif curr_play.hand_type == "pass":
+                print(
+                    "Player {} ({}) passes".format(
+                        curr_player + 1,
+                        self.players[curr_player].player_type(),
+                    )
+                )
+            elif curr_play.hand_type == "win":
+                print(
+                    "Player {} ({}) wins the game!".format(
+                        curr_player + 1,
+                        self.players[curr_player].player_type(),
+                    )
+                )
+            else:
+                print(
+                    "Player {} ({}) plays {}".format(
+                        curr_player + 1,
+                        self.players[curr_player].player_type(),
+                        curr_play,
+                    )
+                )
+
+            prev_round = curr_round
