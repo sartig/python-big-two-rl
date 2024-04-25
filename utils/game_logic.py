@@ -18,10 +18,12 @@ def _get_pairs(deck: List[str]) -> List[CardSet]:
     """
     # assumes deck is sorted
     pairs = []
-    for i in range(len(deck) - 1):
-        for j in range(i + 1, len(deck)):
-            if deck[i][0] == deck[j][0]:
-                pairs.append(CardSet(PLAYABLE_PRIORITY[1], [deck[i], deck[j]]))
+
+    pairs = [
+        CardSet(PLAYABLE_PRIORITY[1], [deck[i], deck[j]])
+        for i, j in combinations(range(len(deck)), 2)
+        if deck[i][0] == deck[j][0] and i != j
+    ]
     return pairs
 
 

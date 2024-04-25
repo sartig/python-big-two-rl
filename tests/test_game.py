@@ -76,6 +76,6 @@ class TestGame(unittest.TestCase):
         self.game.current_player_index = 0
         for player in self.game.players:
             player.hand = ["3c"]
-        self.assertFalse(self.game.did_player_win())
+        self.assertFalse(self.game.did_player_win(CardSet("pass", [])))
         self.game.players[0].hand = []
-        self.assertTrue(self.game.did_player_win())
+        self.assertTrue(self.game.did_player_win(CardSet("pass", [])))
